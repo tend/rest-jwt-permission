@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.utils import module_loading
-from django.utils.lru_cache import lru_cache
+if django.VERSION < (3, 0):
+    from django.utils.lru_cache import lru_cache
+else:
+    from functools import lru_cache
 
 from rest_jwt_permission.settings import get_setting
 
