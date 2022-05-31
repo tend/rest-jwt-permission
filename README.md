@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/chessbr/rest-jwt-permission.svg?branch=master)](https://travis-ci.org/chessbr/rest-jwt-permission)
-[![Coverage Status](https://coveralls.io/repos/github/chessbr/rest-jwt-permission/badge.svg?branch=master)](https://coveralls.io/github/chessbr/rest-jwt-permission?branch=master)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 
