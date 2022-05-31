@@ -22,6 +22,14 @@ def get_payload_from_scopes(scopes):
     }
 
 
+if jwt.__version__.startswith("2"):
+    jwt_version = 2
+    ExpiredSignature = jwt.ExpiredSignatureError
+else:
+    jwt_version = 1
+    ExpiredSignature = jwt.ExpiredSignature
+
+
 def get_scopes_from_payload(payload):
     """
     Get a list of Scope from the JWT payload
@@ -59,7 +67,7 @@ def get_jwt_payload_from_request(request):
 
     try:
         payload = jwt_decode_handler(jwt_value)
-    except jwt.ExpiredSignature:
+    except ExpiredSignature:
         raise exceptions.PermissionDenied(_('Signature has expired.'))
     except jwt.DecodeError:
         raise exceptions.PermissionDenied(_('Error decoding signature.'))
