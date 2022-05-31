@@ -10,7 +10,7 @@ Module that check API View permissions from JWT payloads.
 ## Installation
 
 ```
-pip install rest_jwt_permission
+pip install django3-rest-jwt-permission
 ```
 
 ## Using

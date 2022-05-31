@@ -8,7 +8,7 @@ except IOError:
 
 setup(
     name="django3-rest-jwt-permission",
-    version="1.0.1",
+    version="1.0.2",
     description="Django3 Rest Framework JWT Permissions",
     license="MIT",
     author="Rati Matchavariani",
