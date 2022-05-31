@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import django
+from django import VERSION
 
-if django.VERSION < (3, 0):
+if VERSION < (3, 0):
     from django.utils.lru_cache import lru_cache
 else:
     from functools import lru_cache
@@ -15,6 +15,7 @@ class AdminScopeProvider(ScopeProviderBase):
     """
     Returns admin scopes
     """
+
     @lru_cache()
     def get_available_scopes(self):
         from rest_jwt_permission.scopes import SimpleScope
