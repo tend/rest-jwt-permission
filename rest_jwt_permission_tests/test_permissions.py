@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.test.utils import override_settings
 from django.utils.encoding import force_text
 from rest_framework import response, routers, serializers, status, views, viewsets
-from rest_framework.decorators import api_view, detail_route, list_route, permission_classes
+from rest_framework.decorators import api_view, action, permission_classes
 from rest_framework.test import APIClient
 
 from rest_jwt_permission.permissions import JWTAPIPermission
@@ -36,7 +36,7 @@ class SimpleViewSetPermission(viewsets.ViewSet):
     queryset = get_user_model().objects.all()
     permission_classes = [JWTAPIPermission]
 
-    @list_route(methods=["patch", "put"], permission_classes=[JWTAPIPermission])
+    @action(methods=["patch", "put"], permission_classes=[JWTAPIPermission], detail=False)
     def patch_put(self, request):
         return response.Response({"method": request.method})
 
@@ -52,11 +52,11 @@ class ModelViewSetPermission(viewsets.ModelViewSet):
     def destroy(self, request, pk=None):
         return response.Response({"method": request.method})
 
-    @list_route(methods=["delete", "get"], permission_classes=[JWTAPIPermission])
+    @action(methods=["delete", "get"], permission_classes=[JWTAPIPermission], detail=False)
     def some_method(self, request):
         return response.Response({"method": request.method})
 
-    @detail_route(methods=["get", "post", "patch", "put"], permission_classes=[JWTAPIPermission])
+    @action(methods=["get", "post", "patch", "put"], permission_classes=[JWTAPIPermission], detail=True)
     def some_detail_metod(self, request, pk=None):
         return response.Response({"method": request.method})
 
@@ -71,19 +71,20 @@ urlpatterns = [
     url(r"^other/", include(router.urls)),
 ]
 
+
 def setup_function(fn):
     get_permission_providers.cache_clear()
 
 
 def test_jwt_api_endpoint_permission(admin_user):
     with override_settings(
-        ROOT_URLCONF="rest_jwt_permission_tests.test_permissions",
-        REST_JWT_PERMISSION={
-            "SCOPE_PROVIDERS": [
-                "rest_jwt_permission.providers.APIEndpointScopeProvider",
-                "rest_jwt_permission.providers.AdminScopeProvider"
-            ]
-        }
+            ROOT_URLCONF="rest_jwt_permission_tests.test_permissions",
+            REST_JWT_PERMISSION={
+                "SCOPE_PROVIDERS": [
+                    "rest_jwt_permission.providers.APIEndpointScopeProvider",
+                    "rest_jwt_permission.providers.AdminScopeProvider"
+                ]
+            }
     ):
         payload = {
             "scopes": [
@@ -117,5 +118,7 @@ def test_jwt_api_endpoint_permission(admin_user):
         assert client.get("/other/model_viewset/{}/".format(admin_user.id)).status_code == status.HTTP_200_OK
         assert client.post("/other/model_viewset/", data={"data": 1}).status_code == status.HTTP_200_OK
         assert client.delete("/other/model_viewset/some_method/", data={"data": 2}).status_code == status.HTTP_200_OK
-        assert client.delete("/other/model_viewset/{}/".format(admin_user.id), data={"data": 3}).status_code == status.HTTP_200_OK
-        assert client.patch("/other/model_viewset/{}/some_detail_metod/".format(admin_user.id), data={"data": 4}).status_code == status.HTTP_200_OK
+        assert client.delete("/other/model_viewset/{}/".format(admin_user.id),
+                             data={"data": 3}).status_code == status.HTTP_200_OK
+        assert client.patch("/other/model_viewset/{}/some_detail_metod/".format(admin_user.id),
+                            data={"data": 4}).status_code == status.HTTP_200_OK

@@ -137,10 +137,10 @@ python manage.py show_roles
 
 ## Running tests
 
-Install dependencies from `dev-requirements.txt` and run `py.tets --cov`:
+Install dependencies from `dev-requirements.txt` and run `py.test --cov`:
 
 ```
-pip install dev-requirements.txt && py.tets --cov
+pip install dev-requirements.txt && py.test --cov
 ```
 
 # Compatibility

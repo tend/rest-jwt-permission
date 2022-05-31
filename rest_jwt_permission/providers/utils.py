@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.utils import module_loading
-if django.VERSION < (3, 0):
+from django import VERSION
+
+if VERSION < (3, 0):
     from django.utils.lru_cache import lru_cache
 else:
     from functools import lru_cache

@@ -35,6 +35,6 @@ def test_get_jwt_payload_from_request(rf):
     payload = get_payload_from_scopes(scopes)
     encoded = jwt.encode(payload, key, algorithm='HS256')
 
-    request = rf.post("/", HTTP_AUTHORIZATION="JWT {}".format(force_text(encoded)))
+    request = rf.post("/", HTTP_AUTHORIZATION="bearer {}".format(force_text(encoded)))
     request_payload = get_jwt_payload_from_request(request)
     assert payload == request_payload
